@@ -65,6 +65,9 @@ public class ProductUploadService extends WebService
       {
          Collection c;
          c = collectionService.getCollection(uuid);
+         if (c == null) {
+            c = collectionService.getCollectionByName(uuid);
+         }
          collections.add (c);
       }
 

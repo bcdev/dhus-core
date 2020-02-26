@@ -102,6 +102,12 @@ public class StoreService implements Store
    public void deleteProduct(String uuid, Destination destination, boolean storeAsDeleted, String cause)
          throws StoreException
    {
+      deleteProduct(uuid, destination, storeAsDeleted, cause, false);
+   }
+
+   public void deleteProduct(String uuid, Destination destination, boolean storeAsDeleted, String cause, boolean soft)
+         throws StoreException
+   {
       // start global deletion and time it
       LOGGER.info("Deleting product {} globally", uuid);
       long start = System.currentTimeMillis();
@@ -120,25 +126,29 @@ public class StoreService implements Store
       }
 
       // derived products
-      try
-      {
-         derivedProductStoreService.deleteDerivedProducts(uuid);
-      }
-      catch (ProductNotFoundException suppressed) {}
-      catch (StoreException e)
-      {
-         throwables.add(e);
+      if (!soft) {
+         try
+         {
+            derivedProductStoreService.deleteDerivedProducts(uuid);
+         }
+         catch (ProductNotFoundException suppressed) {}
+         catch (StoreException e)
+         {
+            throwables.add(e);
+         }
       }
 
       // product metadata
-      try
-      {
-         metadataStoreService.deleteProduct(uuid, storeAsDeleted, cause);
-      }
-      catch (ProductNotFoundException suppressed) {}
-      catch (StoreException e)
-      {
-         throwables.add(e);
+      if (!soft) {
+         try
+         {
+            metadataStoreService.deleteProduct(uuid, storeAsDeleted, cause);
+         }
+         catch (ProductNotFoundException suppressed) {}
+         catch (StoreException e)
+         {
+            throwables.add(e);
+         }
       }
 
       // throw errors if any

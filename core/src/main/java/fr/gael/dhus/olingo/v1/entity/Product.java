@@ -113,10 +113,15 @@ public class Product extends Node implements Closeable
 
    public static void delete(String uuid, String cause) throws ODataException
    {
-      delete(uuid, cause, false);
+      delete(uuid, cause, false, false);
    }
 
    public static void delete(String uuid, String cause, boolean purge) throws ODataException
+   {
+      delete(uuid, cause, purge, false);
+   }
+
+   public static void delete(String uuid, String cause, boolean purge, boolean soft) throws ODataException
    {
       if (Security.currentUserHasRole(Role.DATA_MANAGER))
       {
@@ -128,7 +133,7 @@ public class Product extends Node implements Closeable
          try
          {
             long start = System.currentTimeMillis();
-            STORE_SERVICE.deleteProduct(uuid, Destination.TRASH, !purge, cause);
+            STORE_SERVICE.deleteProduct(uuid, Destination.TRASH, !purge, cause, soft);
 
             long totalTime = System.currentTimeMillis() - start;
             // sysma logs

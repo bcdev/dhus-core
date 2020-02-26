@@ -853,7 +853,9 @@ public class Processor extends ODataSingleProcessor
          String cause = customQueryOptions.get("cause");
          String purgeInfo = customQueryOptions.get("purge");
          boolean purge = Boolean.parseBoolean(purgeInfo);
-         Product.delete(uuid, cause, purge);
+         String softInfo = customQueryOptions.get("soft");
+         boolean soft = Boolean.parseBoolean(softInfo);
+         Product.delete(uuid, cause, purge, soft);
       }
       else if (target_et.getName().equals(Model.DELETEDPRODUCT.getEntityName()))
       {
